@@ -2,6 +2,8 @@ class World {
     constructor() {
         this.sprites = [];
         this.spriteData = {};
+        this.width = 80;
+        this.height = 24;
     }
 
     addSpriteData(name, data) {
@@ -18,12 +20,12 @@ class World {
     }
 
     createSpriteFromData(name, data) {
-        const lines = data.split('\n');
+        const lines = data.split('\n').filter(line => line.trim() !== '');
         return {
             name,
             data: lines,
-            x: Math.floor(Math.random() * 80),
-            y: Math.floor(Math.random() * 24)
+            x: Math.floor(Math.random() * this.width),
+            y: Math.floor(Math.random() * this.height)
         };
     }
 
@@ -31,7 +33,7 @@ class World {
         // Update the world state
         this.sprites.forEach(sprite => {
             sprite.x += 1;
-            if (sprite.x > 80) sprite.x = 0;
+            if (sprite.x > this.width) sprite.x = 0;
         });
     }
 }
