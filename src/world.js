@@ -9,39 +9,29 @@ class World {
     }
 
     setup() {
-        // Parse the sprite data and create PIXI sprites
+        // Parse the sprite data and create text-based sprites
         Object.keys(this.spriteData).forEach(name => {
             const data = this.spriteData[name];
-            const sprite = this.createSpriteFromData(data);
+            const sprite = this.createSpriteFromData(name, data);
             this.sprites.push(sprite);
         });
     }
 
-    createSpriteFromData(data) {
+    createSpriteFromData(name, data) {
         const lines = data.split('\n');
-        const height = lines.length;
-        const width = lines[0].length;
-        const graphics = new PIXI.Graphics();
-
-        lines.forEach((line, y) => {
-            [...line].forEach((char, x) => {
-                if (char !== ' ') {
-                    graphics.beginFill(0xFFFFFF);
-                    graphics.drawRect(x * 10, y * 10, 10, 10);
-                    graphics.endFill();
-                }
-            });
-        });
-
-        const texture = this.app.renderer.generateTexture(graphics);
-        return new PIXI.Sprite(texture);
+        return {
+            name,
+            data: lines,
+            x: Math.floor(Math.random() * 80),
+            y: Math.floor(Math.random() * 24)
+        };
     }
 
-    update(delta) {
+    update() {
         // Update the world state
         this.sprites.forEach(sprite => {
-            sprite.x += 1 * delta;
-            if (sprite.x > 800) sprite.x = 0;
+            sprite.x += 1;
+            if (sprite.x > 80) sprite.x = 0;
         });
     }
 }
