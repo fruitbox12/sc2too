@@ -1,17 +1,40 @@
 class World {
     constructor() {
         this.sprites = [];
+        this.spriteData = {};
+    }
+
+    addSpriteData(name, data) {
+        this.spriteData[name] = data;
     }
 
     setup() {
-        // Create and add sprites to the world
-        const texture = PIXI.Loader.shared.resources['spritesheet'].textures['sprite.png'];
-        for (let i = 0; i < 10; i++) {
-            const sprite = new PIXI.Sprite(texture);
-            sprite.x = Math.random() * 800;
-            sprite.y = Math.random() * 600;
+        // Parse the sprite data and create PIXI sprites
+        Object.keys(this.spriteData).forEach(name => {
+            const data = this.spriteData[name];
+            const sprite = this.createSpriteFromData(data);
             this.sprites.push(sprite);
-        }
+        });
+    }
+
+    createSpriteFromData(data) {
+        const lines = data.split('\n');
+        const height = lines.length;
+        const width = lines[0].length;
+        const graphics = new PIXI.Graphics();
+
+        lines.forEach((line, y) => {
+            [...line].forEach((char, x) => {
+                if (char !== ' ') {
+                    graphics.beginFill(0xFFFFFF);
+                    graphics.drawRect(x * 10, y * 10, 10, 10);
+                    graphics.endFill();
+                }
+            });
+        });
+
+        const texture = this.app.renderer.generateTexture(graphics);
+        return new PIXI.Sprite(texture);
     }
 
     update(delta) {
