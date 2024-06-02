@@ -21,9 +21,9 @@ class Game {
             'rock2x2.txt', 'stalker.txt', 'zealot.txt'
         ];
 
+        const fs = require('fs');
         let loadCount = 0;
         spriteFiles.forEach(file => {
-            const fs = require('fs');
             fs.readFile(`data/sprites/${file}`, 'utf8', (err, data) => {
                 if (err) throw err;
                 this.world.addSpriteData(file, data);
