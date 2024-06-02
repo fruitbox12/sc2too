@@ -1,24 +1,34 @@
-class Keyboard {
+const readline = require('readline');
+const { Keyboard } = require('./utils');
+
+class IO {
     constructor() {
-        this.keys = {};
+        this.keyboard = new Keyboard();
+        this.rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout
+        });
     }
 
-    setup() {
-        window.addEventListener('keydown', (e) => this.onKeyDown(e));
-        window.addEventListener('keyup', (e) => this.onKeyUp(e));
+    setup(world) {
+        this.world = world;
+        this.keyboard.setup();
+        this.rl.on('line', (input) => {
+            if (input === 'q') {
+                process.exit(0);
+            }
+        });
     }
 
-    onKeyDown(event) {
-        this.keys[event.key] = true;
-    }
-
-    onKeyUp(event) {
-        this.keys[event.key] = false;
-    }
-
-    isPressed(key) {
-        return this.keys[key] || false;
+    update() {
+        console.clear();
+        this.world.sprites.forEach(sprite => {
+            console.log(`Sprite ${sprite.name} at (${sprite.x}, ${sprite.y}):`);
+            sprite.data.forEach(line => {
+                console.log(line);
+            });
+        });
     }
 }
 
-module.exports = { Keyboard };
+module.exports = { IO };
