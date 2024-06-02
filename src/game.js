@@ -1,16 +1,12 @@
-const PIXI = require('pixi.js');
 const { Engine } = require('./engine');
 const { World } = require('./world');
 const { IO } = require('./io');
 
 class Game {
     constructor() {
-        this.app = new PIXI.Application({ width: 800, height: 600 });
-        document.body.appendChild(this.app.view);
-
         this.world = new World();
         this.engine = new Engine(this.world);
-        this.io = new IO(this.app);
+        this.io = new IO();
 
         this.loadAssets();
     }
@@ -27,14 +23,14 @@ class Game {
 
         let loadCount = 0;
         spriteFiles.forEach(file => {
-            fetch(`data/sprites/${file}`)
-                .then(response => response.text())
-                .then(text => {
-                    this.world.addSpriteData(file, text);
-                    if (++loadCount === spriteFiles.length) {
-                        this.setup();
-                    }
-                });
+            const fs = require('fs');
+            fs.readFile(`data/sprites/${file}`, 'utf8', (err, data) => {
+                if (err) throw err;
+                this.world.addSpriteData(file, data);
+                if (++loadCount === spriteFiles.length) {
+                    this.setup();
+                }
+            });
         });
     }
 
@@ -45,9 +41,7 @@ class Game {
     }
 
     start() {
-        this.app.ticker.add((delta) => {
-            this.engine.update(delta);
-        });
+        this.engine.run();
     }
 }
 
