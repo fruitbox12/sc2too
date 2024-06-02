@@ -1,34 +1,33 @@
+const readline = require('readline');
 const { Keyboard } = require('./utils');
 
 class IO {
-    constructor(app) {
-        this.app = app;
+    constructor() {
         this.keyboard = new Keyboard();
+        this.rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout
+        });
     }
 
     setup(world) {
         this.world = world;
-        this.world.sprites.forEach(sprite => {
-            this.app.stage.addChild(sprite);
-        });
-
         this.keyboard.setup();
+        this.rl.on('line', (input) => {
+            if (input === 'q') {
+                process.exit(0);
+            }
+        });
     }
 
     update() {
-        // Handle rendering and user input
-        if (this.keyboard.isPressed('ArrowRight')) {
-            this.world.sprites.forEach(sprite => {
-                sprite.x += 5;
-                if (sprite.x > 800) sprite.x = 0;
+        console.clear();
+        this.world.sprites.forEach(sprite => {
+            console.log(`Sprite ${sprite.name} at (${sprite.x}, ${sprite.y}):`);
+            sprite.data.forEach(line => {
+                console.log(line);
             });
-        }
-        if (this.keyboard.isPressed('ArrowLeft')) {
-            this.world.sprites.forEach(sprite => {
-                sprite.x -= 5;
-                if (sprite.x < 0) sprite.x = 800;
-            });
-        }
+        });
     }
 }
 
