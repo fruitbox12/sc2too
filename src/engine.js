@@ -8,11 +8,13 @@ class Engine {
         this.io = io;
     }
 
-    update(delta) {
-        if (!this.paused) {
-            this.world.update(delta);
-            this.io.update();
-        }
+    run() {
+        setInterval(() => {
+            if (!this.paused) {
+                this.world.update();
+                this.io.update();
+            }
+        }, 1000 / 60); // 60 FPS
     }
 }
 
