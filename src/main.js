@@ -1,4 +1,9 @@
-const { Game } = require('./game');
+const World = require('./World');
+const UI = require('./UI');
 
-const game = new Game();
-game.start();
+(async () => {
+  const world = await World.create();
+  const ui = new UI(world);
+  
+  ui.startGameLoop();
+})();
