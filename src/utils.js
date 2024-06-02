@@ -1,19 +1,25 @@
 class Keyboard {
     constructor() {
         this.keys = {};
+        this.stdin = process.stdin;
     }
 
     setup() {
-        process.stdin.setRawMode(true);
-        process.stdin.resume();
-        process.stdin.on('data', (key) => {
-            if (key[0] === 3) process.exit(); // Ctrl+C
+        this.stdin.setRawMode(true);
+        this.stdin.resume();
+        this.stdin.setEncoding('utf8');
+        this.stdin.on('data', key => {
+            if (key === '\u0003') { // Ctrl+C
+                process.exit();
+            }
             this.keys[key] = true;
         });
     }
 
     isPressed(key) {
-        return this.keys[key] || false;
+        const pressed = this.keys[key] || false;
+        delete this.keys[key];
+        return pressed;
     }
 }
 
